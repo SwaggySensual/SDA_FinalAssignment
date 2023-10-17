@@ -38,10 +38,3 @@ class Animal:
     
     def GetPortionValue(self):
         return int(self.Weight/10)
-
-
-
-
-    
-
-        
