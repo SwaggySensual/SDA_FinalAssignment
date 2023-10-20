@@ -3,14 +3,11 @@ from animal import Animal
 from zone import Zone
 from employee import Employee
 from task import Task
-
+from visitor import Visitor
 from time import sleep
-
 from random import randint
-
-
-from visitor import *
-
+import pygame
+import GUI
 
 # Create tasks List
 tasks = []
