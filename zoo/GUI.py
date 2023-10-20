@@ -6,6 +6,12 @@ savannah = pygame.image.load('assets/Savannah.png')
 tundra = pygame.image.load('assets/Tundra.png')
 forest = pygame.image.load('assets/Forest.png')
 wolf = pygame.image.load('assets/wolf.png')
+fox = pygame.image.load('assets/fox.png')
+lion = pygame.image.load('assets/lion.png')
+elephant = pygame.image.load('assets/elephant.png')
+hyena = pygame.image.load('assets/hyena.png')
+polarbear = pygame.image.load('assets/polarbear.png')
+
 
 # Use pygame.transform.scale to scale down the image
 savannah = pygame.transform.scale(savannah, (512, 512))
@@ -51,12 +57,6 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-
-    # Check for mouse clicks
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        #if event.button == 1:  # Left mouse button
-            #if button_rect.collidepoint(event.pos):
-                print("Button clicked!")
 
 
     # Clear the screen (fill with black in this case)

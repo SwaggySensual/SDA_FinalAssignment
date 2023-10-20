@@ -1,0 +1,126 @@
+import pygame
+import sys
+
+# Load the assets
+savannah = pygame.image.load('assets/Savannah.png')
+tundra = pygame.image.load('assets/Tundra.png')
+forest = pygame.image.load('assets/Forest.png')
+
+wolf_img = pygame.image.load('assets/wolf.png')
+fox_img = pygame.image.load('assets/fox.png')
+lion_img = pygame.image.load('assets/lion.png')
+elephant_img = pygame.image.load('assets/elephant.png')
+hyena_img = pygame.image.load('assets/hyena.png')
+polarbear_img = pygame.image.load('assets/polarbear.png')
+
+# Use pygame.transform.scale to scale down the images
+savannah = pygame.transform.scale(savannah, (512, 512))
+tundra = pygame.transform.scale(tundra, (512, 512))
+forest = pygame.transform.scale(forest, (512, 512))
+
+wolf_img = pygame.transform.scale(wolf_img, (150, 150))
+fox_img = pygame.transform.scale(fox_img, (150, 150))
+lion_img = pygame.transform.scale(lion_img, (150, 150))
+elephant_img = pygame.transform.scale(elephant_img, (150, 150))
+hyena_img = pygame.transform.scale(hyena_img, (150, 150))
+polarbear_img = pygame.transform.scale(polarbear_img, (150, 150))
+
+# Define colors
+black = (0, 0, 0)
+white = (255, 255, 255)
+
+# Initialize pygame
+pygame.init()
+
+# Set screen dimensions
+screen_width, screen_height = 1920, 1080  # Full HD resolution
+
+# Set object dimensions
+button_width, button_height = 120, 40
+
+# Define rectangle properties
+rect_width, rect_height = 512, 512
+spacing = 170  # Space between rectangles
+top_margin = (screen_height - rect_height) // 2
+left_rect_x = (screen_width - 3 * rect_width - 2 * spacing) // 2
+
+# Create the screen
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+# Create a font for labels
+font = pygame.font.Font(None, 36)
+title_font = pygame.font.Font(None, 90)
+
+# Animals and their corresponding images
+animals = {
+    "wolf": wolf_img,
+    "fox": fox_img,
+    "lion": lion_img,
+    "elephant": elephant_img,
+    "hyena": hyena_img,
+    "polarbear": polarbear_img
+}
+
+# Main loop
+running = True
+current_zone = None
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            # Check if any animal button is clicked
+            for i, (animal_name, animal_img) in enumerate(animals.items()):
+                button_rect = pygame.Rect(left_rect_x + i * (button_width + spacing),
+                                          top_margin + rect_height + 20, button_width, button_height)
+                if button_rect.collidepoint(mouse_pos):
+                    current_zone = (animal_name, animal_img)
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+
+    # Clear the screen
+    screen.fill((192, 192, 182))
+
+    # Draw zoo title
+    title_text = "ZOO"
+    title_text_surface = title_font.render(title_text, True, (0, 0, 0))
+    text_rect = title_text_surface.get_rect(center=(screen_width // 2, 50))
+    screen.blit(title_text_surface, text_rect)
+
+    # Draw zones with black borders
+    zones = [tundra, savannah, forest]
+    for i, zone in enumerate(zones):
+        left = left_rect_x + i * (rect_width + spacing)
+        image_rect = pygame.Rect(left, top_margin, rect_width, rect_height)
+        pygame.draw.rect(screen, black, image_rect, 5)  # Draw zone outline
+        screen.blit(zone, image_rect)
+
+        # Draw zone names
+        label_text = font.render(["Tundra", "Savannah", "Forest"][i], True, black)
+        label_rect = label_text.get_rect(center=(left + rect_width // 2, top_margin - 50))
+        screen.blit(label_text, label_rect.topleft)
+
+    # Draw animal buttons
+    for i, (animal_name, _) in enumerate(animals.items()):
+        button_rect = pygame.Rect(left_rect_x + i * (button_width + spacing),
+                                  top_margin + rect_height + 20, button_width, button_height)
+        pygame.draw.rect(screen, black, button_rect, 2)  # Draw button outline
+        label_text = font.render(animal_name.capitalize(), True, black)
+        label_rect = label_text.get_rect(center=button_rect.center)
+        screen.blit(label_text, label_rect.topleft)
+
+    # Draw selected animal in the selected zone
+    if current_zone:
+        animal_name, animal_image = current_zone
+        zone_rect = pygame.Rect(left_rect_x, top_margin, rect_width, rect_height)
+        screen.blit(animal_image, zone_rect)
+
+    # Update the display
+    pygame.display.flip()
+
+# Quit pygame
+pygame.quit()
+sys.exit()
