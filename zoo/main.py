@@ -3,13 +3,11 @@ from animal import Animal
 from zone import Zone
 from employee import Employee
 from task import Task
-
+from visitor import Visitor
 from time import sleep
-
-
-
-from visitor import *
-
+from random import randint
+import pygame
+import GUI
 
 # Create tasks List
 tasks = []
@@ -68,4 +66,3 @@ if __name__ == "__main__":
         AssignTask(myzoo)
         myzoo.Step()
         sleep(1)
-        

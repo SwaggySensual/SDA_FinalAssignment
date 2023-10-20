@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 #Load the assets
 savannah = pygame.image.load('assets/Savannah.png')
@@ -24,6 +25,9 @@ wolf = pygame.transform.scale(wolf, (150, 150))
 #define colors
 black = (0,0,0)
 white = (255,255,255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
 # Initialize pygame
 pygame.init()
@@ -40,6 +44,18 @@ rect_height = 512
 spacing = 96  # Space between rectangles
 top_margin = (screen_height - rect_height) // 2
 left_rect_x = (screen_width - 3 * rect_width - 2 * spacing) // 2
+
+wolf_x_pos = random.randint(screen_width-spacing-rect_width, screen_width-spacing-150)
+wolf_y_pos = random.randint(top_margin, top_margin+rect_height-150)
+wolf_rect = pygame.Rect(wolf_x_pos, wolf_y_pos, 0, 0)
+
+# Health bar dimensions
+health_bar_width = 100
+health_bar_height = 20
+
+#Wolf data TO BE REMOVED
+max_health = 100
+wolf_health = random.randint(1, 100)
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -97,14 +113,28 @@ while running:
         label_rect.centery = top_margin - 50  # Adjust as needed
         screen.blit(label_text, label_rect)
 
-    wolf_rect = pygame.Rect(screen_width-500, top_margin+100, 400, 400)
+    
+    #Place the wolf in the forest
     screen.blit(wolf, wolf_rect)
     wolf_text = font.render('wolf', True, white)
     wolf_text_rect = wolf_text.get_rect()
-    wolf_text_rect.centerx = screen_width-400
-    wolf_text_rect.centery = top_margin+120  # Adjust as needed
+    #Align the "wolf" label with its sprite
+    wolf_text_rect.centerx = wolf_x_pos + 80
+    wolf_text_rect.centery = wolf_y_pos - 10 # Adjust as needed
     screen.blit(wolf_text, wolf_text_rect)
-    
+    # Health bar position
+    health_bar_x = wolf_x_pos + 50
+    health_bar_y = wolf_y_pos
+    #Place the health bar
+    # Draw the red background of the health bar
+    pygame.draw.rect(screen, red, (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
+    # Calculate the width of the green part of the health bar based on current health
+    green_width = (wolf_health / max_health) * health_bar_width
+    # Draw the green part
+    pygame.draw.rect(screen, green, (health_bar_x, health_bar_y, green_width, health_bar_height))
+    # Draw a black outline for the health bar
+    pygame.draw.rect(screen, black, (health_bar_x, health_bar_y, health_bar_width, health_bar_height), 3)
+
     # Update the display
     pygame.display.flip()
 
