@@ -49,6 +49,7 @@ def CheckFeedingTask(zoo):
 
 
 # create a function for assigning tasks
+#It actually assigns AND executed the task
 def AssignTask(zoo):
     for task in tasks:
         if task.GetStatus() == False:

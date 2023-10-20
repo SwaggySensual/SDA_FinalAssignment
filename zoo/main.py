@@ -7,7 +7,6 @@ from visitor import Visitor
 from time import sleep
 from random import randint
 import pygame
-import GUI
 
 # Create tasks List
 tasks = []
