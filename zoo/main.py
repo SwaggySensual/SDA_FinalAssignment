@@ -6,6 +6,7 @@ from task import Task
 
 from time import sleep
 
+from random import randint
 
 
 from visitor import *
@@ -68,4 +69,3 @@ if __name__ == "__main__":
         AssignTask(myzoo)
         myzoo.Step()
         sleep(1)
-        
