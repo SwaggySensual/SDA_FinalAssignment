@@ -63,7 +63,7 @@ animals = {
 
 # Main loop
 running = True
-current_zone = None
+animal_select = None
 
 while running:
     for event in pygame.event.get():
@@ -76,7 +76,7 @@ while running:
                 button_rect = pygame.Rect(left_rect_x + i * (button_width + spacing),
                                           top_margin + rect_height + 20, button_width, button_height)
                 if button_rect.collidepoint(mouse_pos):
-                    current_zone = (animal_name, animal_img)
+                    animal_select = (animal_name, animal_img)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
@@ -113,9 +113,11 @@ while running:
         screen.blit(label_text, label_rect.topleft)
 
     # Draw selected animal in the selected zone
-    if current_zone:
-        animal_name, animal_image = current_zone
+    if animal_select:
+        animal_name, animal_image = animal_select
         zone_rect = pygame.Rect(left_rect_x, top_margin, rect_width, rect_height)
+        savannah_rect = pygame.Rect(left_rect_x+spacing+rect_width, top_margin, rect_width, rect_height)
+        forest_rect = pygame.Rect(left_rect_x+2*spacing+2*rect_width, top_margin, rect_width, rect_height)
         screen.blit(animal_image, zone_rect)
 
     # Update the display
