@@ -45,17 +45,17 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 
 animal_health = {
-    "wolf": 100,
-    "fox": 100,
-    "lion": 100,
-    "elephant": 50,
-    "hyena": 100,
-    "polarbear": 20,
-    "articfox": 100,
-    "blackbear": 20,
-    "cheetah": 100,
-    "deer": 10,
-    "ostrich": 100
+    "Wolf": 100,
+    "Fox": 100,
+    "Lion": 100,
+    "Elephant": 50,
+    "Hyena": 100,
+    "Polar bear": 20,
+    "Artic fox": 100,
+    "Black bear": 20,
+    "Cheetah": 100,
+    "Deer": 10,
+    "Ostrich": 100
 }
 
 # Initialize pygame
@@ -82,7 +82,11 @@ rectangle_height = button_height * 2  # Height for the title and buttons
 
 #Establish healthbar sizes
 healthbar_width = 100
-healthbar_height = 15
+healthbar_height = 10
+
+# Create a font for labels
+font = pygame.font.Font(None, 36)
+title_font = pygame.font.Font(None, 90)
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -91,22 +95,22 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Animals for each zone
 
 forest_animals = {
-    "wolf": wolf_img,
-    "blackbear": blackbear_img,
-    "deer": deer_img
+    "Wolf": wolf_img,
+    "Black bear": blackbear_img,
+    "Deer": deer_img
 }
 
 savannah_animals = {
-    "lion": lion_img,
-    "elephant": elephant_img,
-    "hyena": hyena_img,
-    "cheetah": cheetah_img,
-    "ostrich": ostrich_img
+    "Lion": lion_img,
+    "Elephant": elephant_img,
+    "Hyena": hyena_img,
+    "Cheetah": cheetah_img,
+    "Ostrich": ostrich_img
 }
 
 tundra_animals = {
-    "fox": fox_img, 
-    "polarbear": polarbear_img
+    "Fox": fox_img, 
+    "Polar bear": polarbear_img
 }
 
 
@@ -191,6 +195,13 @@ while running:
             animal_x = zone_x_positions[zone_names.index(current_zone)] + gap_x * (column + 1) + column * animal_width
             animal_y = top_margin + gap_y * (row + 1) + row * animal_height
             animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
+
+            #Align the animal label with its sprite
+            animal_label = font.render(animal_name, True, white)
+            animal_label_rect = animal_label.get_rect()
+            animal_label_rect.x = animal_x
+            animal_label_rect.y = animal_y # Adjust as needed
+            screen.blit(animal_label, animal_label_rect)
 
             # Calculate health bar width based on animal's health
             health_percentage = animal_health[animal_name] / 100
