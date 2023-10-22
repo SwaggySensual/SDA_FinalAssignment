@@ -115,9 +115,13 @@ rectangle_y = screen_height - 100
 rectangle_width = zone_width
 rectangle_height = button_height * 2  # Height for the title and buttons
 
+#Define habitat sizes
+habitat_width, habitat_height = (512, 512)
+
 #Establish healthbar sizes
 healthbar_width = 100
 healthbar_height = 10
+foodIndicator_height = healthbar_height*3
 
 # Create tasks List
 tasks = []
@@ -197,6 +201,7 @@ if __name__ == "__main__":
     running = True
     current_zone = None
     selected_animals = []  # Store selected animals for the current zone
+    FoodLevels = [0] * len(myzoo.Zones)
 
     while running:
         CheckFeedingTask(myzoo)
@@ -237,6 +242,10 @@ if __name__ == "__main__":
         zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
         screen.blit(zookeeper_img, zookeeper_rect)
 
+        for i, zone in enumerate(myzoo.Zones):
+            FoodLevel = zone.FoodContainers
+            FoodLevels[i] = FoodLevel
+
         # Draw zones with black borders
         zones = [forest, savannah, tundra]
         # Draw zone images
@@ -254,15 +263,27 @@ if __name__ == "__main__":
             label_rect.centery = top_margin - 20  # Adjust as needed
             screen.blit(label_text, label_rect)
 
-        #Draw zone buttons
+            #Draw zone buttons
             pygame.draw.rect(screen, black, (zone_x, rectangle_y, rectangle_width, rectangle_height), 2)
 
-        # Draw zone button labels
+            # Draw zone button labels
             button_label_text = f"Add {zone_names[i]}'s Animals"
             button_label_font = pygame.font.Font(None, 36)
             button_label_surface = button_label_font.render(button_label_text, True, (0, 0, 0))
             button_label_rect = button_label_surface.get_rect(center=(zone_x + rectangle_width // 2, rectangle_y + button_height // 2))
             screen.blit(button_label_surface, button_label_rect)
+
+            # Draw food level indicator
+            pygame.draw.rect(screen, white, (zone_x_positions[i], top_margin+habitat_height, habitat_width, foodIndicator_height))
+            pygame.draw.rect(screen, (153,76,0), (zone_x_positions[i], top_margin+habitat_height, FoodLevels[i]*512//100, foodIndicator_height)) #Operation is made to scale the food value to the indicator
+            pygame.draw.rect(screen, black, (zone_x_positions[i], top_margin+habitat_height, habitat_width, foodIndicator_height), 3)
+
+            #Align the food level count
+            food_count = font.render(f"{FoodLevels[i]}", True, white)
+            food_count_rect = food_count.get_rect()
+            food_count_rect.x = zone_x_positions[i] + 10 #Add a small margin
+            food_count_rect.centery = top_margin+habitat_height+foodIndicator_height//2
+            screen.blit(food_count, food_count_rect)
 
         # Draw animals inside their zone
         if current_zone is not None:
