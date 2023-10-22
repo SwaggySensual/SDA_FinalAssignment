@@ -67,7 +67,7 @@ screen_width, screen_height = 1920, 1080  # Full HD resolution
 # Set object dimensions for buttons and zones
 button_width, button_height = 120, 40
 zone_width, zone_height = 512, 512
-spacing = 170  # Space between zones
+spacing = 96  # Space between zones
 top_margin = (screen_height - zone_height) // 2
 
 # Calculate positions for zone images
@@ -160,9 +160,11 @@ while running:
     for i, zone_image in enumerate(zones):
         zone_x = zone_x_positions[i]
         screen.blit(zone_image, (zone_x, top_margin))
+        # Draw the black outlines
+        pygame.draw.rect(screen, black, (zone_x, top_margin, 512, 512), 5)  # Width of 2 for the outline
 
      #Draw zone buttons
-        pygame.draw.rect(screen, (0, 0, 0), (zone_x, rectangle_y, rectangle_width, rectangle_height), 2)
+        pygame.draw.rect(screen, black, (zone_x, rectangle_y, rectangle_width, rectangle_height), 2)
 
      # Draw zone button labels
         button_label_text = f"Add {zone_names[i]}'s Animals"
