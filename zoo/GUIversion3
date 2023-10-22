@@ -62,10 +62,7 @@ animal_health = {
     "Ostrich": 100
 }
 
-# Initialize pygame
-pygame.init()
-
-# Set screen dimensions
+#Set screen dimensions
 screen_width, screen_height = 1920, 1080  # Full HD resolution
 
 # Set object dimensions for buttons and zones
@@ -88,16 +85,8 @@ rectangle_height = button_height * 2  # Height for the title and buttons
 healthbar_width = 100
 healthbar_height = 10
 
-# Create a font for labels
-font = pygame.font.Font(None, 36)
-title_font = pygame.font.Font(None, 90)
-
-# Create the screen
-screen = pygame.display.set_mode((screen_width, screen_height))
-
 # Animals and their corresponding images
 # Animals for each zone
-
 forest_animals = {
     "Wolf": wolf_img,
     "Black bear": blackbear_img,
@@ -117,9 +106,18 @@ tundra_animals = {
     "Polar bear": polarbear_img
 }
 
-
 # Define zone names
 zone_names = ["Forest", "Savannah", "Tundra"]
+
+# Initialize pygame
+pygame.init()
+
+# Create a font for labels
+font = pygame.font.Font(None, 36)
+title_font = pygame.font.Font(None, 90)
+
+# Create the screen
+screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Define zone buttons with their corresponding zone indices
 zone_buttons = [
