@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Load the assets
 savannah = pygame.image.load('assets/Savannah.png')
@@ -12,22 +13,47 @@ lion_img = pygame.image.load('assets/lion.png')
 elephant_img = pygame.image.load('assets/elephant.png')
 hyena_img = pygame.image.load('assets/hyena.png')
 polarbear_img = pygame.image.load('assets/polarbear.png')
+articfox_img = pygame.image.load('assets/articfox.png')
+blackbear_img = pygame.image.load('assets/blackbear.png')
+cheetah_img = pygame.image.load('assets/cheetah.png')
+deer_img = pygame.image.load('assets/deer.png')
+ostrich_img = pygame.image.load('assets/ostrich.png')
+
 
 # Use pygame.transform.scale to scale down the images
 savannah = pygame.transform.scale(savannah, (512, 512))
 tundra = pygame.transform.scale(tundra, (512, 512))
 forest = pygame.transform.scale(forest, (512, 512))
 
-wolf_img = pygame.transform.scale(wolf_img, (150, 150))
-fox_img = pygame.transform.scale(fox_img, (150, 150))
-lion_img = pygame.transform.scale(lion_img, (150, 150))
-elephant_img = pygame.transform.scale(elephant_img, (150, 150))
-hyena_img = pygame.transform.scale(hyena_img, (150, 150))
-polarbear_img = pygame.transform.scale(polarbear_img, (150, 150))
+wolf_img = pygame.transform.scale(wolf_img, (130, 130))
+fox_img = pygame.transform.scale(fox_img, (130, 130))
+lion_img = pygame.transform.scale(lion_img, (130, 130))
+elephant_img = pygame.transform.scale(elephant_img, (130, 130))
+hyena_img = pygame.transform.scale(hyena_img, (130, 130))
+polarbear_img = pygame.transform.scale(polarbear_img, (130, 130))
+articfox_img = pygame.transform.scale(articfox_img, (130, 130))
+blackbear_img = pygame.transform.scale(blackbear_img, (130, 130))
+cheetah_img = pygame.transform.scale(cheetah_img, (130, 130))
+deer_img = pygame.transform.scale(deer_img, (130, 130))
+ostrich_img = pygame.transform.scale(ostrich_img, (130, 130))
 
 # Define colors
 black = (0, 0, 0)
 white = (255, 255, 255)
+
+animal_health = {
+    "wolf": 100,
+    "fox": 100,
+    "lion": 100,
+    "elephant": 100,
+    "hyena": 100,
+    "polarbear": 100,
+    "articfox": 100,
+    "blackbear": 100,
+    "cheetah": 100,
+    "deer": 100,
+    "ostrich": 100
+}
 
 # Initialize pygame
 pygame.init()
@@ -59,13 +85,17 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Animals for each zone
 
 forest_animals = {
-    "wolf": wolf_img
+    "wolf": wolf_img,
+    "blackbear": blackbear_img,
+    "deer": deer_img
 }
 
 savannah_animals = {
     "lion": lion_img,
     "elephant": elephant_img,
-    "hyena": hyena_img
+    "hyena": hyena_img,
+    "cheetah": cheetah_img,
+    "ostrich": ostrich_img
 }
 
 tundra_animals = {
@@ -100,7 +130,7 @@ while running:
                 if button_rect.collidepoint(mouse_pos):
                     current_zone = zone_names[i]  # Set the current zone based on the clicked button
                     selected_animals = list([forest_animals, savannah_animals, tundra_animals][i].keys())
-
+                    
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
@@ -134,17 +164,40 @@ while running:
         screen.blit(button_label_surface, button_label_rect)
 
 
-    # Draw selected animals in the current zone
+    # Draw animals inside their zone
     if current_zone is not None:
         zone_dict = [forest_animals, savannah_animals, tundra_animals][zone_names.index(current_zone)]
-        for j, animal_name in enumerate(selected_animals):
+        total_animals = len(selected_animals)
+        max_columns = 2  # Maximum number of columns for animal display
+        animal_width, animal_height = 150, 150  # Width and height of each animal image
+        gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
+        columns = min(total_animals, max_columns)
+        rows = (total_animals + max_columns - 1) // max_columns  # Calculate number of rows
+        
+        for index, animal_name in enumerate(selected_animals):
+            row = index // max_columns
+            column = index % max_columns
             animal_img = zone_dict[animal_name]
-            animal_x = zone_x_positions[zone_names.index(current_zone)] + \
-                        (rectangle_width - len(selected_animals) * (button_width + 10)) // 2 + j * (
-                                button_width + 10)
-            animal_rect = animal_img.get_rect(
-                center=(animal_x + button_width // 2, rectangle_y + 70 + button_height // 2))
+            animal_x = zone_x_positions[zone_names.index(current_zone)] + gap_x * (column + 1) + column * animal_width
+            animal_y = top_margin + gap_y * (row + 1) + row * animal_height
+            animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
+             # Draw health bar background
+            pygame.draw.rect(screen, (255, 0, 0), (animal_x, animal_y - 10, animal_width, 5))
+            
+            # Calculate health bar width based on animal's health
+            health_percentage = animal_health[animal_name] / 100
+            health_bar_width = int(animal_width * health_percentage)
+            
+            # Draw health bar
+            pygame.draw.rect(screen, (0, 255, 0), (animal_x, animal_y - 10, health_bar_width, 5))
+            
+            # Draw animal image
             screen.blit(animal_img, animal_rect)
+
+           
+
+
+    
 
     # Update the display
     pygame.display.flip()

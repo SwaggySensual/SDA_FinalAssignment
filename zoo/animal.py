@@ -1,3 +1,5 @@
+import pygame
+
 class Animal:
     def __init__(self, ID, animal_type, animal_breed, age, weight):
         self.ID = ID
@@ -7,6 +9,21 @@ class Animal:
         self.Health = 100 #hp
         self.Weight = weight
 
+    def draw(self, screen, x, y, width, height):
+        # Draw the animal image
+        animal_img = self.get_animal_image()  # Implement this method to return the appropriate image based on the animal's breed
+        animal_img = pygame.transform.scale(animal_img, (width, height))
+        screen.blit(animal_img, (x, y))
+
+        # Draw the health bar
+        health_bar_width = 50
+        health_bar_height = 10
+        health_bar_x = x + (width - health_bar_width) // 2
+        health_bar_y = y - health_bar_height - 5
+        pygame.draw.rect(screen, (0, 255, 0), (health_bar_x, health_bar_y, health_bar_width * (self.Health / 100), health_bar_height))
+        pygame.draw.rect(screen, (255, 0, 0), (health_bar_x + health_bar_width * (self.Health / 100), health_bar_y, health_bar_width * (1 - self.Health / 100), health_bar_height))
+
+    # ... (other methods and attributes)
 
     def GetHealth(self):
         return self.Health
