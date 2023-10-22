@@ -167,10 +167,10 @@ while running:
         # Draw the black outlines
         pygame.draw.rect(screen, black, (zone_x, top_margin, 512, 512), 5)  # Width of 2 for the outline
 
-        # Render and draw the label
+        # Render and draw the label of the habitats
         label_text = font.render(zone_names[i], True, black)
         label_rect = label_text.get_rect()
-        label_rect.centerx = spacing*1+i + zone_width*1+i // 2
+        label_rect.centerx = spacing*(1+i) + zone_width*(1+i) - zone_width // 2
         label_rect.centery = top_margin - 20  # Adjust as needed
         screen.blit(label_text, label_rect)
 
