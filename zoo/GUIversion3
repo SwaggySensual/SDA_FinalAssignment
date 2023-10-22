@@ -19,6 +19,8 @@ cheetah_img = pygame.image.load('assets/cheetah.png')
 deer_img = pygame.image.load('assets/deer.png')
 ostrich_img = pygame.image.load('assets/ostrich.png')
 
+zookeeper_img = pygame.image.load('assets/zookeeper.png')
+
 
 # Use pygame.transform.scale to scale down the images
 savannah = pygame.transform.scale(savannah, (512, 512))
@@ -36,6 +38,8 @@ blackbear_img = pygame.transform.scale(blackbear_img, (130, 130))
 cheetah_img = pygame.transform.scale(cheetah_img, (130, 130))
 deer_img = pygame.transform.scale(deer_img, (130, 130))
 ostrich_img = pygame.transform.scale(ostrich_img, (130, 130))
+
+zookeeper_img = pygame.transform.scale(zookeeper_img, (75, 130))
 
 # Define colors
 black = (0, 0, 0)
@@ -156,9 +160,14 @@ while running:
     text_rect = title_text_surface.get_rect(center=(screen_width // 2, 50))
     screen.blit(title_text_surface, text_rect)
 
+    #Draw zookeeper
+    zookeeper_rect = zookeeper_img.get_rect()
+    zookeeper_rect.x = spacing
+    zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
+    screen.blit(zookeeper_img, zookeeper_rect)
+
     # Draw zones with black borders
     zones = [forest, savannah, tundra]
-
     # Draw zone images
     zone_x_positions = [forest_x, savannah_x, tundra_x]
     for i, zone_image in enumerate(zones):
@@ -193,7 +202,7 @@ while running:
         animal_width, animal_height = 150, 150  # Width and height of each animal image
         gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
         columns = min(total_animals, max_columns)
-        rows = (total_animals + max_columns - 1) // max_columns  # Calculate number of rows
+        rows = (total_animals + max_columns - 1) // max_columns  #Calculate number of rows
         
         for index, animal_name in enumerate(selected_animals):
             row = index // max_columns
