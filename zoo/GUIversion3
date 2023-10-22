@@ -76,7 +76,7 @@ savannah_x = forest_x + zone_width + spacing
 tundra_x = savannah_x + zone_width + spacing
 
 # Calculate positions for rectangles below zones
-rectangle_y = top_margin + zone_height + 20
+rectangle_y = screen_height - 100
 rectangle_width = zone_width
 rectangle_height = button_height * 2  # Height for the title and buttons
 
@@ -166,6 +166,13 @@ while running:
         screen.blit(zone_image, (zone_x, top_margin))
         # Draw the black outlines
         pygame.draw.rect(screen, black, (zone_x, top_margin, 512, 512), 5)  # Width of 2 for the outline
+
+        # Render and draw the label
+        label_text = font.render(zone_names[i], True, black)
+        label_rect = label_text.get_rect()
+        label_rect.centerx = spacing*1+i + zone_width*1+i // 2
+        label_rect.centery = top_margin - 20  # Adjust as needed
+        screen.blit(label_text, label_rect)
 
      #Draw zone buttons
         pygame.draw.rect(screen, black, (zone_x, rectangle_y, rectangle_width, rectangle_height), 2)

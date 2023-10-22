@@ -116,12 +116,13 @@ while running:
     
     #Place the wolf in the forest
     screen.blit(wolf, wolf_rect)
-    wolf_text = font.render('wolf', True, white)
-    wolf_text_rect = wolf_text.get_rect()
+    
     #Align the "wolf" label with its sprite
-    wolf_text_rect.centerx = wolf_x_pos + 80
-    wolf_text_rect.centery = wolf_y_pos - 10 # Adjust as needed
-    screen.blit(wolf_text, wolf_text_rect)
+    wolf_label = font.render('wolf', True, white)
+    wolf_label_rect = wolf_label.get_rect()
+    wolf_label_rect.centerx = wolf_x_pos + 80
+    wolf_label_rect.centery = wolf_y_pos - 10 # Adjust as needed
+    screen.blit(wolf_label, wolf_label_rect)
     # Health bar position
     health_bar_x = wolf_x_pos + 50
     health_bar_y = wolf_y_pos
