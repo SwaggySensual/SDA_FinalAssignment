@@ -40,18 +40,21 @@ ostrich_img = pygame.transform.scale(ostrich_img, (130, 130))
 # Define colors
 black = (0, 0, 0)
 white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
 animal_health = {
     "wolf": 100,
     "fox": 100,
     "lion": 100,
-    "elephant": 100,
+    "elephant": 50,
     "hyena": 100,
-    "polarbear": 100,
+    "polarbear": 20,
     "articfox": 100,
-    "blackbear": 100,
+    "blackbear": 20,
     "cheetah": 100,
-    "deer": 100,
+    "deer": 10,
     "ostrich": 100
 }
 
@@ -67,7 +70,6 @@ zone_width, zone_height = 512, 512
 spacing = 170  # Space between zones
 top_margin = (screen_height - zone_height) // 2
 
-
 # Calculate positions for zone images
 forest_x = (screen_width - 3 * zone_width - 2 * spacing) // 2
 savannah_x = forest_x + zone_width + spacing
@@ -77,6 +79,10 @@ tundra_x = savannah_x + zone_width + spacing
 rectangle_y = top_margin + zone_height + 20
 rectangle_width = zone_width
 rectangle_height = button_height * 2  # Height for the title and buttons
+
+#Establish healthbar sizes
+healthbar_width = 100
+healthbar_height = 15
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -113,6 +119,7 @@ zone_buttons = [
     pygame.Rect(savannah_x, rectangle_y, rectangle_width, rectangle_height),
     pygame.Rect(tundra_x, rectangle_y, rectangle_width, rectangle_height)
 ]
+
 # Main loop
 running = True
 current_zone = None
@@ -134,6 +141,7 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+
     # Clear the screen
     screen.fill((192, 192, 182))
 
@@ -181,15 +189,17 @@ while running:
             animal_x = zone_x_positions[zone_names.index(current_zone)] + gap_x * (column + 1) + column * animal_width
             animal_y = top_margin + gap_y * (row + 1) + row * animal_height
             animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
-             # Draw health bar background
-            pygame.draw.rect(screen, (255, 0, 0), (animal_x, animal_y - 10, animal_width, 5))
-            
+
             # Calculate health bar width based on animal's health
             health_percentage = animal_health[animal_name] / 100
-            health_bar_width = int(animal_width * health_percentage)
-            
+            health_level = int(healthbar_width * health_percentage)
+
+            # Draw health bar background
+            pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
             # Draw health bar
-            pygame.draw.rect(screen, (0, 255, 0), (animal_x, animal_y - 10, health_bar_width, 5))
+            pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
+            # Draw a black outline for the health bar
+            pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
             
             # Draw animal image
             screen.blit(animal_img, animal_rect)

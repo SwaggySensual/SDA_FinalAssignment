@@ -51,7 +51,7 @@ wolf_rect = pygame.Rect(wolf_x_pos, wolf_y_pos, 0, 0)
 
 # Health bar dimensions
 health_bar_width = 100
-health_bar_height = 20
+health_bar_height = 15
 
 #Wolf data TO BE REMOVED
 max_health = 100
