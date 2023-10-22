@@ -91,6 +91,8 @@ tundra_animals = {
     "Polar bear": polarbear_img
 }
 
+animals = {}
+
 # Define zone names
 zone_names = ["Forest", "Savannah", "Tundra"]
 
@@ -200,7 +202,9 @@ if __name__ == "__main__":
         CheckFeedingTask(myzoo)
         AssignTask(myzoo)
         myzoo.Step()
-        sleep(0.1)
+        sleep(0.5)
+
+
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -285,19 +289,22 @@ if __name__ == "__main__":
                 animal_label_rect.y = animal_y # Adjust as needed
                 screen.blit(animal_label, animal_label_rect)
 
-                # Calculate health bar width based on animal's health
-                health_percentage = animal_health[animal_name] / 100
-                health_level = int(healthbar_width * health_percentage)
-
-                # Draw health bar background
-                pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
-                # Draw health bar
-                pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
-                # Draw a black outline for the health bar
-                pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
+                # Iterate through the zoo's Zones and animals
+                for zone in myzoo.Zones:
+                    for animal in zone.Animals:
+                        health_level = animal.Health  # Access the Health attribute
+                        # Use the 'health' value as needed in your code
+                        # Draw health bar background
+                        pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
+                        # Draw health bar
+                        pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
+                        # Draw a black outline for the health bar
+                        pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
                 
                 # Draw animal image
                 screen.blit(animal_img, animal_rect)
+
+            
 
         # Update the display
         pygame.display.flip()
