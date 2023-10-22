@@ -45,7 +45,7 @@ def MakeZoo():
 def CheckFeedingTask(zoo):
     for zone in zoo.Zones:
         if zone.FoodContainers < 50:
-            tasks.append(Task(0,"Feed", 0, zone.ID))
+            tasks.append(Task(0,"Feed", 0, zone.ID)) #Adds a task named "feed" to the tasks array
 
 
 # create a function for assigning tasks

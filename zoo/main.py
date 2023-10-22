@@ -147,7 +147,7 @@ def MakeZoo():
     zoo.Zones[1].AddAnimal(Animal(8, "Forest Animal", "Black Bear", 7, 110))
     zoo.Zones[1].AddAnimal(Animal(9, "Forest Animal", "Deer", 4, 26))
     # Add Employee ...
-    zoo.AddEmployee(Employee(1, 12, 5))
+    zoo.AddEmployee(Employee(1, 8, 5))
 
     return zoo
 
@@ -200,7 +200,7 @@ if __name__ == "__main__":
         CheckFeedingTask(myzoo)
         AssignTask(myzoo)
         myzoo.Step()
-        sleep(1)
+        sleep(0.1)
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
