@@ -232,15 +232,22 @@ if __name__ == "__main__":
         # Draw zoo title
         title_text = "ZOO"
         title_font = pygame.font.Font(None, 90)
-        title_text_surface = title_font.render(title_text, True, (0, 0, 0))
+        title_text_surface = title_font.render(title_text, True, black)
         text_rect = title_text_surface.get_rect(center=(screen_width // 2, 50))
         screen.blit(title_text_surface, text_rect)
 
+        #for employee in employees:  USe this if we have more than 1 employee
         #Draw zookeeper
         zookeeper_rect = zookeeper_img.get_rect()
         zookeeper_rect.x = spacing
         zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
         screen.blit(zookeeper_img, zookeeper_rect)
+        #Align the food level count
+        employee_ID = font.render(f"{myzoo.Employees[0].ID}", True, black)
+        employee_ID_rect = employee_ID.get_rect()
+        employee_ID_rect.x = zookeeper_rect.x + zookeeper_rect.width//2 #Add a small margin
+        employee_ID_rect.y = zookeeper_rect.y-30 #Adjust as needed
+        screen.blit(employee_ID, employee_ID_rect)
 
         for i, zone in enumerate(myzoo.Zones):
             FoodLevel = zone.FoodContainers
