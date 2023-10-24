@@ -97,7 +97,7 @@ animals = {}
 zone_names = ["Forest", "Savannah", "Tundra"]
 
 #Set screen dimensions
-screen_width, screen_height = 1920, 1080  # Full HD resolution
+screen_width, screen_height = 1920//2, 1080//2  # Full HD resolution
 
 # Set object dimensions for buttons and zones
 button_width, button_height = 120, 40
