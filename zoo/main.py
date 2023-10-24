@@ -15,17 +15,21 @@ savannah = pygame.image.load('assets/Savannah.png')
 tundra = pygame.image.load('assets/Tundra.png')
 forest = pygame.image.load('assets/Forest.png')
 
-wolf_img = pygame.image.load('assets/wolf.png')
-fox_img = pygame.image.load('assets/fox.png')
-lion_img = pygame.image.load('assets/lion.png')
-elephant_img = pygame.image.load('assets/elephant.png')
-hyena_img = pygame.image.load('assets/hyena.png')
-polarbear_img = pygame.image.load('assets/polarbear.png')
-articfox_img = pygame.image.load('assets/articfox.png')
-blackbear_img = pygame.image.load('assets/blackbear.png')
-cheetah_img = pygame.image.load('assets/cheetah.png')
-deer_img = pygame.image.load('assets/deer.png')
-ostrich_img = pygame.image.load('assets/ostrich.png')
+animal_images = {
+    
+    "Wolf" : pygame.image.load('assets/wolf.png'),
+    "Fox" : pygame.image.load('assets/fox.png'),
+    "Lion" : pygame.image.load('assets/lion.png'),
+    "Elephant" : pygame.image.load('assets/elephant.png'),
+    "Hyena" : pygame.image.load('assets/hyena.png'),
+    "Polar bear" : pygame.image.load('assets/polarbear.png'),
+    "Arctic fox" : pygame.image.load('assets/arcticfox.png'),
+    "Black bear" : pygame.image.load('assets/blackbear.png'),
+    "Cheetah" : pygame.image.load('assets/cheetah.png'),
+    "Deer" : pygame.image.load('assets/deer.png'),
+    "Ostrich" : pygame.image.load('assets/ostrich.png')
+
+}
 
 zookeeper_img = pygame.image.load('assets/zookeeper.png')
 
@@ -34,17 +38,7 @@ savannah = pygame.transform.scale(savannah, (512, 512))
 tundra = pygame.transform.scale(tundra, (512, 512))
 forest = pygame.transform.scale(forest, (512, 512))
 
-wolf_img = pygame.transform.scale(wolf_img, (130, 130))
-fox_img = pygame.transform.scale(fox_img, (130, 130))
-lion_img = pygame.transform.scale(lion_img, (130, 130))
-elephant_img = pygame.transform.scale(elephant_img, (130, 130))
-hyena_img = pygame.transform.scale(hyena_img, (130, 130))
-polarbear_img = pygame.transform.scale(polarbear_img, (130, 130))
-articfox_img = pygame.transform.scale(articfox_img, (130, 130))
-blackbear_img = pygame.transform.scale(blackbear_img, (130, 130))
-cheetah_img = pygame.transform.scale(cheetah_img, (130, 130))
-deer_img = pygame.transform.scale(deer_img, (130, 130))
-ostrich_img = pygame.transform.scale(ostrich_img, (130, 130))
+scaled_animal_images = {key: pygame.transform.scale(img, (130, 130)) for key, img in animal_images.items()}
 
 zookeeper_img = pygame.transform.scale(zookeeper_img, (75, 130))
 
@@ -63,7 +57,7 @@ animal_health = {
     "Elephant": 50,
     "Hyena": 100,
     "Polar bear": 20,
-    "Artic fox": 100,
+    "Arctic fox": 100,
     "Black bear": 20,
     "Cheetah": 100,
     "Deer": 10,
@@ -73,22 +67,22 @@ animal_health = {
 # Animals and their corresponding images
 # Animals for each zone
 forest_animals = {
-    "Wolf": wolf_img,
-    "Black bear": blackbear_img,
-    "Deer": deer_img
+    "Wolf": scaled_animal_images["Wolf"],
+    "Black bear": scaled_animal_images["Black bear"],
+    "Deer": scaled_animal_images["Deer"]
 }
 
 savannah_animals = {
-    "Lion": lion_img,
-    "Elephant": elephant_img,
-    "Hyena": hyena_img,
-    "Cheetah": cheetah_img,
-    "Ostrich": ostrich_img
+    "Lion": scaled_animal_images["Lion"],
+    "Elephant": scaled_animal_images["Elephant"],
+    "Hyena": scaled_animal_images["Hyena"],
+    "Cheetah": scaled_animal_images["Cheetah"],
+    "Ostrich": scaled_animal_images["Ostrich"]
 }
 
 tundra_animals = {
-    "Fox": fox_img, 
-    "Polar bear": polarbear_img
+    "Arctic fox": scaled_animal_images["Artic fox"],
+    "Polar bear": scaled_animal_images["Polar bear"]
 }
 
 animals = {}
@@ -122,6 +116,14 @@ habitat_width, habitat_height = (512, 512)
 healthbar_width = 100
 healthbar_height = 10
 foodIndicator_height = healthbar_height*3
+
+# Define one Add animals button dimensions and positions
+add_button_width, add_button_height = 200, 60
+add_button_x = (screen_width - add_button_width) // 2
+add_button_y = screen_height - 80
+
+#Creating the button
+add_button = pygame.Rect(add_button_x, add_button_y, add_button_width, add_button_height)
 
 # Create tasks List
 tasks = []
@@ -200,7 +202,8 @@ if __name__ == "__main__":
     # Main loop
     running = True
     current_zone = None
-    selected_animals = []  # Store selected animals for the current zone
+    selected_animals = set()  # Store selected animals for the current zone
+    animals_added = False #To check if the animals are added or not (make use of the button)
     FoodLevels = [0] * len(myzoo.Zones)
 
     while running:
@@ -216,12 +219,16 @@ if __name__ == "__main__":
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                # Check if any zone button is clicked
-                for i, button_rect in enumerate(zone_buttons):
-                    if button_rect.collidepoint(mouse_pos):
-                        current_zone = zone_names[i]  # Set the current zone based on the clicked button
-                        selected_animals = list([forest_animals, savannah_animals, tundra_animals][i].keys())
-                        
+                #Ckeck first if button is clicked
+                if add_button.collidepoint(mouse_pos):
+                        #Clear the selected_animals set before adding animals from the current zone
+                        selected_animals.clear()
+                        # Add all animals to the selected_animals set for each zone
+                        selected_animals.update(forest_animals.keys())
+                        selected_animals.update(savannah_animals.keys())
+                        selected_animals.update(tundra_animals.keys())
+                        animals_added = True  # Set the flag to indicate animals are added
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
@@ -270,15 +277,18 @@ if __name__ == "__main__":
             label_rect.centery = top_margin - 20  # Adjust as needed
             screen.blit(label_text, label_rect)
 
-            #Draw zone buttons
-            pygame.draw.rect(screen, black, (zone_x, rectangle_y, rectangle_width, rectangle_height), 2)
+            # Draw "Add Animals" button
+            pygame.draw.rect(screen, black, add_button, 2)
+            button_text = font.render("Add Animals", True, black)
+            button_text_rect = button_text.get_rect(center=add_button.center)
+            screen.blit(button_text, button_text_rect)
 
             # Draw zone button labels
-            button_label_text = f"Add {zone_names[i]}'s Animals"
-            button_label_font = pygame.font.Font(None, 36)
-            button_label_surface = button_label_font.render(button_label_text, True, (0, 0, 0))
-            button_label_rect = button_label_surface.get_rect(center=(zone_x + rectangle_width // 2, rectangle_y + button_height // 2))
-            screen.blit(button_label_surface, button_label_rect)
+            #button_label_text = f"Add {zone_names[i]}'s Animals"
+            #button_label_font = pygame.font.Font(None, 36)
+            #button_label_surface = button_label_font.render(button_label_text, True, (0, 0, 0))
+            #button_label_rect = button_label_surface.get_rect(center=(zone_x + rectangle_width // 2, rectangle_y + button_height // 2))
+            #screen.blit(button_label_surface, button_label_rect)
 
             # Draw food level indicator
             pygame.draw.rect(screen, white, (zone_x_positions[i], top_margin+habitat_height, habitat_width, foodIndicator_height))
@@ -292,47 +302,63 @@ if __name__ == "__main__":
             food_count_rect.centery = top_margin+habitat_height+foodIndicator_height//2
             screen.blit(food_count, food_count_rect)
 
-        # Draw animals inside their zone
-        if current_zone is not None:
-            zone_dict = [forest_animals, savannah_animals, tundra_animals][zone_names.index(current_zone)]
-            total_animals = len(selected_animals)
-            max_columns = 2  # Maximum number of columns for animal display
-            animal_width, animal_height = 150, 150  # Width and height of each animal image
-            gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
-            columns = min(total_animals, max_columns)
-            rows = (total_animals + max_columns - 1) // max_columns  #Calculate number of rows
-            
-            for index, animal_name in enumerate(selected_animals):
-                row = index // max_columns
-                column = index % max_columns
-                animal_img = zone_dict[animal_name]
-                animal_x = zone_x_positions[zone_names.index(current_zone)] + gap_x * (column + 1) + column * animal_width
-                animal_y = top_margin + gap_y * (row + 1) + row * animal_height
-                animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
+            # Draw animals inside their zone only if animals are added
+            if animals_added:
+                for current_zone in zone_names:
+                    zone_dict = {
+                        "Forest": forest_animals,
+                        "Savannah": savannah_animals,
+                        "Tundra": tundra_animals
+                    }[current_zone]
 
-                #Align the animal label with its sprite
-                animal_label = font.render(animal_name, True, white)
-                animal_label_rect = animal_label.get_rect()
-                animal_label_rect.x = animal_x
-                animal_label_rect.y = animal_y # Adjust as needed
-                screen.blit(animal_label, animal_label_rect)
+                    total_animals = len(zone_dict)
+                    max_columns = 2  # Maximum number of columns for animal display
+                    animal_width, animal_height = 150, 150  # Width and height of each animal image
+                    gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
+                    columns = min(total_animals, max_columns)
+                    rows = (total_animals + max_columns - 1) // max_columns  # Calculate number of rows
 
-                # Iterate through the zoo's Zones and animals
-                for zone in myzoo.Zones:
-                    for animal in zone.Animals:
-                        health_level = animal.Health  # Access the Health attribute
-                        # Use the 'health' value as needed in your code
-                        # Draw health bar background
-                        pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
-                        # Draw health bar
-                        pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
-                        # Draw a black outline for the health bar
-                        pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
-                
-                # Draw animal image
-                screen.blit(animal_img, animal_rect)
+                    for index, (animal_name, animal_img) in enumerate(zone_dict.items()):
+                        row = index // max_columns
+                        column = index % max_columns
 
-            
+                        # Calculate animal positions based on the current zone
+                        if current_zone == "Forest":
+                            zone_x = forest_x
+                        elif current_zone == "Savannah":
+                            zone_x = savannah_x
+                        elif current_zone == "Tundra":
+                            zone_x = tundra_x
+
+
+                        animal_x = zone_x + gap_x * (column + 1) + column * animal_width
+                        animal_y = top_margin + gap_y * (row + 1) + row * animal_height
+                        animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
+
+                        # Draw animal image
+                        screen.blit(animal_img, animal_rect)
+
+                        #Align the animal label with its sprite
+                        animal_label = font.render(animal_name, True, white)
+                        animal_label_rect = animal_label.get_rect()
+                        animal_label_rect.x = animal_x
+                        animal_label_rect.y = animal_y # Adjust as needed
+                        screen.blit(animal_label, animal_label_rect)
+
+                        # Iterate through the zoo's Zones and animals
+                        for zone in myzoo.Zones:
+                            for animal in zone.Animals:
+                                health_level = animal.Health  # Access the Health attribute
+                                # Use the 'health' value as needed in your code
+                                # Draw health bar background
+                                pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
+                                # Draw health bar
+                                pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
+                                # Draw a black outline for the health bar
+                                pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
+                        
+                        # Draw animal image
+                        screen.blit(animal_img, animal_rect)
 
         # Update the display
         pygame.display.flip()
