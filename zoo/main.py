@@ -31,7 +31,19 @@ animal_images = {
 
 }
 
+guy_img = pygame.image.load('assets/guy.png')
+girl_img = pygame.image.load('assets/girl.png')
 zookeeper_img = pygame.image.load('assets/zookeeper.png')
+
+#Scale down the unit image and make a flipped copy of it
+zookeeper_img_L = pygame.transform.scale(zookeeper_img, (75, 130))
+zookeeper_img_R = pygame.transform.flip(zookeeper_img_L, True, False)
+
+girl_img_L = pygame.transform.scale(girl_img, (78, 130))                        
+girl_img_R = pygame.transform.flip(girl_img_L, True, False)
+
+guy_img_L = pygame.transform.scale(guy_img, (75, 130))                        
+guy_img_R = pygame.transform.flip(guy_img_L, True, False)
 
 # Use pygame.transform.scale to scale down the images
 savannah = pygame.transform.scale(savannah, (512, 512))
@@ -40,31 +52,12 @@ forest = pygame.transform.scale(forest, (512, 512))
 
 scaled_animal_images = {key: pygame.transform.scale(img, (130, 130)) for key, img in animal_images.items()}
 
-#Scale down the zookeeper image and make a flipped copy of it
-zookeeper_img_L = pygame.transform.scale(zookeeper_img, (75, 130))
-zookeeper_img_R = pygame.transform.flip(zookeeper_img_L, True, False)
-
 # Define colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-
-#THIS NEEDS TO BE REMOVED AS IS A PLACEHOLDER
-animal_health = {
-    "Wolf": 100,
-    "Fox": 100,
-    "Lion": 100,
-    "Elephant": 50,
-    "Hyena": 100,
-    "Polar bear": 20,
-    "Arctic fox": 100,
-    "Black bear": 20,
-    "Cheetah": 100,
-    "Deer": 10,
-    "Ostrich": 100
-}
 
 # Animals and their corresponding images
 # Animals for each zone
@@ -129,6 +122,7 @@ add_button = pygame.Rect(add_button_x, add_button_y, add_button_width, add_butto
 
 #employee movement speed
 employee_speed = -50
+visitor_speed = -5
 
 # Create tasks List
 tasks = []
@@ -191,7 +185,7 @@ def wallBounce(x, speed, left_wall, right_wall):
 
 
 
-#-------------------------------------MAIN PROGRAM---------------------------
+#-------------------------------------MAIN PROGRAM---------------------------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     print ("Starting Application")
     # Initialize pygame
@@ -221,6 +215,7 @@ if __name__ == "__main__":
     animals_added = False #To check if the animals are added or not (make use of the button)
     # Define a boolean flag for placing the employees
     employee_flag = False
+    visitor_flag = False
     FoodLevels = [0] * len(myzoo.Zones)
 
     while running:
@@ -266,7 +261,7 @@ if __name__ == "__main__":
         for i, zone in enumerate(myzoo.Zones):
             FoodLevel = zone.FoodContainers
             FoodLevels[i] = FoodLevel
-
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # Draw zones with black borders
         zones = [forest, savannah, tundra]
         # Draw zone images
@@ -309,6 +304,7 @@ if __name__ == "__main__":
             food_count_rect.centery = top_margin+habitat_height+foodIndicator_height//2
             screen.blit(food_count, food_count_rect)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
         # Draw animals inside their zone only if animals are added
         if animals_added:
             for current_zone in zone_names:
@@ -366,12 +362,11 @@ if __name__ == "__main__":
                     
                     # Draw animal image
                     screen.blit(animal_img, animal_rect)
-
-            #for employee in employees:  Use this if we have more than 1 employee
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
             #Draw zookeeper
             if employee_flag == False:
                 zookeeper_rect = zookeeper_img_L.get_rect()
-                zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
+                zookeeper_rect.y = screen_height - 220  # Adjust as needed, make sure it does not overlap with the title or habitats
                 zookeeper_rect.x = random.randint(spacing, screen_width-spacing - zookeeper_rect.width)
                 employee_flag = True
             else:
@@ -391,6 +386,19 @@ if __name__ == "__main__":
             employee_ID_rect.x = zookeeper_rect.x + zookeeper_rect.width//2 #Add a small margin
             employee_ID_rect.y = zookeeper_rect.y-30 #Adjust as needed
             screen.blit(employee_ID, employee_ID_rect)
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            #Draw visitors
+            for i in range(3):
+                #Draw visitors
+                visitor_rect = guy_img_L.get_rect()
+                visitor_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
+                visitor_rect.x = spacing + i*800
+                
+                #Check the direction the visitor is facing
+                if visitor_speed < 0:
+                    screen.blit(guy_img_L, visitor_rect)  # Original direction
+                elif visitor_speed > 0:
+                    screen.blit(guy_img_R, visitor_rect)  # Mirrored direction
 
         # Update the display
         pygame.display.flip()
