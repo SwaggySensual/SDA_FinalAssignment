@@ -5,7 +5,7 @@ from employee import Employee
 from task import Task
 from visitor import Visitor
 from time import sleep
-from random import randint
+import random
 import pygame
 import sys
 
@@ -40,7 +40,9 @@ forest = pygame.transform.scale(forest, (512, 512))
 
 scaled_animal_images = {key: pygame.transform.scale(img, (130, 130)) for key, img in animal_images.items()}
 
-zookeeper_img = pygame.transform.scale(zookeeper_img, (75, 130))
+#Scale down the zookeeper image and make a flipped copy of it
+zookeeper_img_L = pygame.transform.scale(zookeeper_img, (75, 130))
+zookeeper_img_R = pygame.transform.flip(zookeeper_img_L, True, False)
 
 # Define colors
 black = (0, 0, 0)
@@ -125,6 +127,9 @@ add_button_y = screen_height - 80
 #Creating the button
 add_button = pygame.Rect(add_button_x, add_button_y, add_button_width, add_button_height)
 
+#employee movement speed
+employee_speed = -50
+
 # Create tasks List
 tasks = []
 
@@ -173,6 +178,16 @@ def AssignTask(zoo):
             zoo.Employees[0].AssignTask(task)
             zoo.Employees[0].ExecuteTask(zoo.GetZone(task.ZoneID))
 
+def wallBounce(x, speed, left_wall, right_wall):
+    #Check for hitting a wall. If so, change that direction.
+    if x <= left_wall or x >= right_wall:
+        speed = speed * -1
+
+    #To be implemented maybe?
+    #if self.y <= 0 or self.y >= self.maxHeight:
+    #    self.ySpeed = self.ySpeed * -1
+
+    return speed
 
 
 
@@ -204,6 +219,8 @@ if __name__ == "__main__":
     current_zone = None
     selected_animals = set()  # Store selected animals for the current zone
     animals_added = False #To check if the animals are added or not (make use of the button)
+    # Define a boolean flag for placing the employees
+    employee_flag = False
     FoodLevels = [0] * len(myzoo.Zones)
 
     while running:
@@ -245,19 +262,6 @@ if __name__ == "__main__":
         title_text_surface = title_font.render(title_text, True, black)
         text_rect = title_text_surface.get_rect(center=(screen_width // 2, 50))
         screen.blit(title_text_surface, text_rect)
-
-        #for employee in employees:  USe this if we have more than 1 employee
-        #Draw zookeeper
-        zookeeper_rect = zookeeper_img.get_rect()
-        zookeeper_rect.x = spacing
-        zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
-        screen.blit(zookeeper_img, zookeeper_rect)
-        #Align the food level count
-        employee_ID = font.render(f"{myzoo.Employees[0].ID}", True, black)
-        employee_ID_rect = employee_ID.get_rect()
-        employee_ID_rect.x = zookeeper_rect.x + zookeeper_rect.width//2 #Add a small margin
-        employee_ID_rect.y = zookeeper_rect.y-30 #Adjust as needed
-        screen.blit(employee_ID, employee_ID_rect)
 
         for i, zone in enumerate(myzoo.Zones):
             FoodLevel = zone.FoodContainers
@@ -305,63 +309,88 @@ if __name__ == "__main__":
             food_count_rect.centery = top_margin+habitat_height+foodIndicator_height//2
             screen.blit(food_count, food_count_rect)
 
-            # Draw animals inside their zone only if animals are added
-            if animals_added:
-                for current_zone in zone_names:
-                    zone_dict = {
-                        "Forest": forest_animals,
-                        "Savannah": savannah_animals,
-                        "Tundra": tundra_animals
-                    }[current_zone]
+        # Draw animals inside their zone only if animals are added
+        if animals_added:
+            for current_zone in zone_names:
+                zone_dict = {
+                    "Forest": forest_animals,
+                    "Savannah": savannah_animals,
+                    "Tundra": tundra_animals
+                }[current_zone]
 
-                    total_animals = len(zone_dict)
-                    max_columns = 2  # Maximum number of columns for animal display
-                    animal_width, animal_height = 150, 150  # Width and height of each animal image
-                    gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
-                    columns = min(total_animals, max_columns)
-                    rows = (total_animals + max_columns - 1) // max_columns  # Calculate number of rows
+                total_animals = len(zone_dict)
+                max_columns = 2  # Maximum number of columns for animal display
+                animal_width, animal_height = 150, 150  # Width and height of each animal image
+                gap_x, gap_y = 50, 30  # Gap between animals in x and y directions
+                columns = min(total_animals, max_columns)
+                rows = (total_animals + max_columns - 1) // max_columns  # Calculate number of rows
 
-                    for index, (animal_name, animal_img) in enumerate(zone_dict.items()):
-                        row = index // max_columns
-                        column = index % max_columns
+                for index, (animal_name, animal_img) in enumerate(zone_dict.items()):
+                    row = index // max_columns
+                    column = index % max_columns
 
-                        # Calculate animal positions based on the current zone
-                        if current_zone == "Forest":
-                            zone_x = forest_x
-                        elif current_zone == "Savannah":
-                            zone_x = savannah_x
-                        elif current_zone == "Tundra":
-                            zone_x = tundra_x
+                    # Calculate animal positions based on the current zone
+                    if current_zone == "Forest":
+                        zone_x = forest_x
+                    elif current_zone == "Savannah":
+                        zone_x = savannah_x
+                    elif current_zone == "Tundra":
+                        zone_x = tundra_x
 
 
-                        animal_x = zone_x + gap_x * (column + 1) + column * animal_width
-                        animal_y = top_margin + gap_y * (row + 1) + row * animal_height
-                        animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
+                    animal_x = zone_x + gap_x * (column + 1) + column * animal_width
+                    animal_y = top_margin + gap_y * (row + 1) + row * animal_height
+                    animal_rect = animal_img.get_rect(center=(animal_x + animal_width // 2, animal_y + animal_height // 2))
 
-                        # Draw animal image
-                        screen.blit(animal_img, animal_rect)
+                    # Draw animal image
+                    screen.blit(animal_img, animal_rect)
 
-                        #Align the animal label with its sprite
-                        animal_label = font.render(animal_name, True, white)
-                        animal_label_rect = animal_label.get_rect()
-                        animal_label_rect.x = animal_x
-                        animal_label_rect.y = animal_y # Adjust as needed
-                        screen.blit(animal_label, animal_label_rect)
+                    #Align the animal label with its sprite
+                    animal_label = font.render(animal_name, True, white)
+                    animal_label_rect = animal_label.get_rect()
+                    animal_label_rect.x = animal_x
+                    animal_label_rect.y = animal_y # Adjust as needed
+                    screen.blit(animal_label, animal_label_rect)
 
-                        # Iterate through the zoo's Zones and animals
-                        for zone in myzoo.Zones:
-                            for animal in zone.Animals:
-                                health_level = animal.Health  # Access the Health attribute
-                                # Use the 'health' value as needed in your code
-                                # Draw health bar background
-                                pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
-                                # Draw health bar
-                                pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
-                                # Draw a black outline for the health bar
-                                pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
-                        
-                        # Draw animal image
-                        screen.blit(animal_img, animal_rect)
+                    # Iterate through the zoo's Zones and animals
+                    for zone in myzoo.Zones:
+                        for animal in zone.Animals:
+                            health_level = animal.Health  # Access the Health attribute
+                            # Use the 'health' value as needed in your code
+                            # Draw health bar background
+                            pygame.draw.rect(screen, red, (animal_x, animal_y - 10, healthbar_width, healthbar_height))
+                            # Draw health bar
+                            pygame.draw.rect(screen, green, (animal_x, animal_y - 10, health_level, healthbar_height))
+                            # Draw a black outline for the health bar
+                            pygame.draw.rect(screen, black, (animal_x, animal_y - 10, healthbar_width, healthbar_height), 2)
+                    
+                    # Draw animal image
+                    screen.blit(animal_img, animal_rect)
+
+            #for employee in employees:  Use this if we have more than 1 employee
+            #Draw zookeeper
+            if employee_flag == False:
+                zookeeper_rect = zookeeper_img_L.get_rect()
+                zookeeper_rect.y = 100  # Adjust as needed, make sure it does not overlap with the title or habitats
+                zookeeper_rect.x = random.randint(spacing, screen_width-spacing - zookeeper_rect.width)
+                employee_flag = True
+            else:
+                zookeeper_rect.x = zookeeper_rect.x + employee_speed
+
+            employee_speed = wallBounce(zookeeper_rect.x, employee_speed, spacing, screen_width-spacing - zookeeper_rect.width)
+
+            #Check the direction the employee is facing
+            if employee_speed < 0:
+                screen.blit(zookeeper_img_L, zookeeper_rect)  # Original direction
+            elif employee_speed > 0:
+                screen.blit(zookeeper_img_R, zookeeper_rect)  # Mirrored direction
+
+            #Align the ID
+            employee_ID = font.render(f"{myzoo.Employees[0].ID}", True, black)
+            employee_ID_rect = employee_ID.get_rect()
+            employee_ID_rect.x = zookeeper_rect.x + zookeeper_rect.width//2 #Add a small margin
+            employee_ID_rect.y = zookeeper_rect.y-30 #Adjust as needed
+            screen.blit(employee_ID, employee_ID_rect)
 
         # Update the display
         pygame.display.flip()
