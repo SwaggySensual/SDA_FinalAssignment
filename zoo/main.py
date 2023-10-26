@@ -81,7 +81,7 @@ savannah_animals = {
 }
 
 tundra_animals = {
-    "Arctic fox": scaled_animal_images["Artic fox"],
+    "Arctic fox": scaled_animal_images["Arctic fox"],
     "Polar bear": scaled_animal_images["Polar bear"]
 }
 
@@ -209,9 +209,12 @@ if __name__ == "__main__":
     while running:
         CheckFeedingTask(myzoo)
         AssignTask(myzoo)
-        myzoo.Step()
-        sleep(0.5)
 
+        #Add a condition to only make the zoo work when animals are added
+        if animals_added == True:
+            myzoo.Step()
+
+        sleep(0.5)
 
         # Handle events
         for event in pygame.event.get():
